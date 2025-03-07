@@ -17,11 +17,11 @@ class StreamReassembler {
     // Your code here -- add private members as necessary.
     std::vector<char> _buffer;     
     std::vector<bool> _occupied;    
-    size_t _next_index = 0;         // Global index of the next byte to output in the stream
-    size_t _head = 0;               // Start index in buffer corresponding to nex_index
-    size_t _buffer_size = 0;        // 버퍼에 저장된, 아직 출력되지 않은 바이트 수
+    size_t _next_index = 0;         //! Global index of the next byte to output in the stream
+    size_t _head = 0;               //! Start index in buffer corresponding to nex_index
+    size_t _buffer_size = 0;        //! 버퍼에 저장된, 아직 출력되지 않은 바이트 수
 
-    bool _eof = false;            // EOF flag
+    bool _eof = false;            //! EOF flag
     size_t _eof_index = 0;        
 
   public:
