@@ -28,8 +28,8 @@ StreamReassembler::StreamReassembler(const size_t capacity)
 //! contiguous substrings and writes them into the output stream in order.
 void StreamReassembler::push_substring(const string &data, const size_t index, const bool eof) {
     const size_t available_capacity = _output.remaining_capacity();
-    const size_t start = index;
-    const size_t end = min(index + data.size(), index + available_capacity);
+    const size_t start  = max(index, _next_index);
+    const size_t end = min(index + data.size(), _next_index + available_capacity);
 
     for (size_t i = start; i < end; i++) {
         size_t buffer_idx = (_head + i - _next_index) % _capacity;
