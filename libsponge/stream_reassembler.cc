@@ -13,22 +13,22 @@ void DUMMY_CODE(Targs &&... /* unused */) {}
 using namespace std;
 
 StreamReassembler::StreamReassembler(const size_t capacity)
-    : _output(capacity),
-      _capacity(capacity),
-      _buffer(capacity, 0),
-      _occupied(capacity, false),
-      _next_index(0),
-      _head(0),
-      _buffer_size(0),
-      _eof(false),
-      _eof_index(0) {}
+    : _output(capacity)
+    , _capacity(capacity)
+    , _buffer(capacity, 0)
+    , _occupied(capacity, false)
+    , _next_index(0)
+    , _head(0)
+    , _buffer_size(0)
+    , _eof(false)
+    , _eof_index(0) {}
 
 //! \details This function accepts a substring (aka a segment) of bytes,
 //! possibly out-of-order, from the logical stream, and assembles any newly
 //! contiguous substrings and writes them into the output stream in order.
 void StreamReassembler::push_substring(const string &data, const size_t index, const bool eof) {
     const size_t available_capacity = _output.remaining_capacity();
-    const size_t start  = max(index, _next_index);
+    const size_t start = max(index, _next_index);
     const size_t end = min(index + data.size(), _next_index + available_capacity);
 
     for (size_t i = start; i < end; i++) {
@@ -53,7 +53,7 @@ void StreamReassembler::push_substring(const string &data, const size_t index, c
         _next_index++;
         _buffer_size--;
     }
-    
+
     if (!contiguous_data.empty()) {
         _output.write(contiguous_data);
     }

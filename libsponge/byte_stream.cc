@@ -36,7 +36,7 @@ string ByteStream::peek_output(const size_t len) const {
 //! \param[in] len bytes will be removed from the output side of the buffer
 void ByteStream::pop_output(const size_t len) {
     const size_t readable = min(buffer_.size(), len);
-    
+
     buffer_.erase(buffer_.begin(), buffer_.begin() + readable);
 
     bytes_read_ += readable;

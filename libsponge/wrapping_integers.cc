@@ -18,7 +18,7 @@ WrappingInt32 wrap(uint64_t n, WrappingInt32 isn) {
 
     uint32_t raw_isn = isn.raw_value();
     uint32_t result = (n + raw_isn) % mod;
-    
+
     return WrappingInt32{result};
 }
 
@@ -39,10 +39,7 @@ uint64_t unwrap(WrappingInt32 n, WrappingInt32 isn, uint64_t checkpoint) {
     uint64_t base = (checkpoint / mod) * mod;
     uint64_t candidate = base + offset;
 
-    auto diff = [](uint64_t a, uint64_t b) -> uint64_t {
-        return a > b ? a - b : b - a;
-    };
-
+    auto diff = [](uint64_t a, uint64_t b) -> uint64_t { return a > b ? a - b : b - a; };
 
     uint64_t candidate_plus = candidate + mod;
     uint64_t candidate_minus;
@@ -54,10 +51,10 @@ uint64_t unwrap(WrappingInt32 n, WrappingInt32 isn, uint64_t checkpoint) {
     uint64_t _diff = diff(candidate, checkpoint);
     uint64_t _diff_plus = diff(candidate_plus, checkpoint);
     uint64_t _diff_minus;
-    if  (candidate >= mod) 
+    if (candidate >= mod)
         _diff_minus = diff(candidate_minus, checkpoint);
-    
-    else 
+
+    else
         _diff_minus = UINT64_MAX;
 
     if (_diff <= _diff_plus && _diff <= _diff_minus) {

@@ -12,23 +12,22 @@ using namespace std;
 
 void TCPReceiver::segment_received(const TCPSegment &seg) {
     const TCPHeader &header = seg.header();
-    
+
     // LISTEN state
     if (!_syn_received) {
         if (header.syn) {
             _syn_received = true;
             _isn = header.seqno;
-        }
-        else {
+        } else {
             return;
         }
     }
 
     // SYN_RECEV state
     size_t abs_seqno = unwrap(header.seqno, _isn, _reassembler.stream_out().bytes_written());
-    
+
     if (!header.syn) {
-        abs_seqno -= 1; 
+        abs_seqno -= 1;
     }
 
     _reassembler.push_substring(seg.payload().copy(), abs_seqno, header.fin);
@@ -42,9 +41,9 @@ void TCPReceiver::segment_received(const TCPSegment &seg) {
 optional<WrappingInt32> TCPReceiver::ackno() const {
     if (!_syn_received)
         return {};
-    
+
     uint64_t _ackno = _reassembler.stream_out().bytes_written() + 1;
-    
+
     if (_fin_received && _reassembler.empty()) {
         _ackno += 1;
     }
@@ -52,6 +51,4 @@ optional<WrappingInt32> TCPReceiver::ackno() const {
     return wrap(_ackno, _isn);
 }
 
-size_t TCPReceiver::window_size() const {
-    return _reassembler.stream_out().remaining_capacity();
-}
+size_t TCPReceiver::window_size() const { return _reassembler.stream_out().remaining_capacity(); }
