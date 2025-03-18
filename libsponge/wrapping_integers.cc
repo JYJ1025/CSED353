@@ -35,10 +35,10 @@ WrappingInt32 wrap(uint64_t n, WrappingInt32 isn) {
 uint64_t unwrap(WrappingInt32 n, WrappingInt32 isn, uint64_t checkpoint) {
     uint64_t mod = 1ull << 32;
 
-    uni32_t raw_n = n.raw_value();
-    uni32_t raw_isn = isn.raw_value();
+    uint32_t raw_n = n.raw_value();
+    uint32_t raw_isn = isn.raw_value();
 
-    uintt32_t offset;
+    uint32_t offset;
     if (raw_n > raw_isn) {
         offset = raw_n - raw_isn;
     }
@@ -48,7 +48,7 @@ uint64_t unwrap(WrappingInt32 n, WrappingInt32 isn, uint64_t checkpoint) {
 
     //! \note candiate = offset + k * mod
     uint64_t cnt = (checkpoint - (offset - mod/2)) / mod;
-    uint candiate = offset + k * cycle;
+    uint candiate = offset + cnt * mod;
 
     return candiate;
 }
