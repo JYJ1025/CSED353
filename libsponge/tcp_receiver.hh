@@ -33,7 +33,8 @@ class TCPReceiver {
     TCPReceiver(const size_t capacity) 
       : _reassembler(capacity), 
         _capacity(capacity), 
-        _isn(WrappingInt32(0)) {}
+        _isn(WrappingInt32(0))
+      {}
 
     //! \name Accessors to provide feedback to the remote TCPSender
     //!@{

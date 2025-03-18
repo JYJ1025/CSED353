@@ -33,22 +33,27 @@ WrappingInt32 wrap(uint64_t n, WrappingInt32 isn) {
 //! and the other stream runs from the remote TCPSender to the local TCPReceiver and
 //! has a different ISN.
 uint64_t unwrap(WrappingInt32 n, WrappingInt32 isn, uint64_t checkpoint) {
-    uint64_t mod = 1ull << 32;
+    const uint64_t mod = 1ull << 32;
 
-    uint32_t raw_n = n.raw_value();
-    uint32_t raw_isn = isn.raw_value();
+    uint32_t offset = n.raw_value() - isn.raw_value();
+    uint64_t base = (checkpoint / mod) * mod;
+    uint64_t candidate = base + offset;
 
-    uint32_t offset;
-    if (raw_n > raw_isn) {
-        offset = raw_n - raw_isn;
+    auto diff = [](uint64_t a, uint64_t b) -> uint64_t {
+        return a > b ? a - b : b - a;
+    };
+
+    uint64_t diff1 = diff(candidate + mod - checkpoint, checkpoint);
+    uint64_t diff2 = diff(candidate - checkpoint, checkpoint);
+    uint64_t diff3 = diff(candidate - checkpoint - mod, checkpoint);
+
+    if (diff1 <= diff2 && diff1 <= diff3) {
+        return candidate + mod;
+    }
+    else if (diff3 <= diff2 && diff3 <= diff2) {
+        return candidate - mod;
     }
     else {
-        offset = raw_n - raw_isn + mod;
-    }
-
-    //! \note candiate = offset + k * mod
-    uint64_t cnt = (checkpoint - (offset - mod/2)) / mod;
-    uint candiate = offset + cnt * mod;
-
-    return candiate;
+        return candidate;   
+    } 
 }
