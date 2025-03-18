@@ -43,17 +43,28 @@ uint64_t unwrap(WrappingInt32 n, WrappingInt32 isn, uint64_t checkpoint) {
         return a > b ? a - b : b - a;
     };
 
-    uint64_t diff1 = diff(candidate + mod - checkpoint, checkpoint);
-    uint64_t diff2 = diff(candidate - checkpoint, checkpoint);
-    uint64_t diff3 = diff(candidate - checkpoint - mod, checkpoint);
 
-    if (diff1 <= diff2 && diff1 <= diff3) {
-        return candidate + mod;
+    uint64_t candidate_plus = candidate + mod;
+    uint64_t candidate_minus;
+    if (candidate >= mod)
+        candidate_minus = candidate - mod;
+    else
+        candidate_minus = candidate;
+
+    uint64_t _diff = diff(candidate, checkpoint);
+    uint64_t _diff_plus = diff(candidate_plus, checkpoint);
+    uint64_t _diff_minus;
+    if  (candidate >= mod) 
+        _diff_minus = diff(candidate_minus, checkpoint);
+    
+    else 
+        _diff_minus = UINT64_MAX;
+
+    if (_diff <= _diff_plus && _diff <= _diff_minus) {
+        return candidate;
+    } else if (_diff_plus <= _diff && _diff_plus <= _diff_minus) {
+        return candidate_plus;
+    } else {
+        return candidate_minus;
     }
-    else if (diff3 <= diff2 && diff3 <= diff2) {
-        return candidate - mod;
-    }
-    else {
-        return candidate;   
-    } 
 }
