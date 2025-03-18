@@ -33,10 +33,6 @@ void TCPReceiver::segment_received(const TCPSegment &seg) {
 
     _reassembler.push_substring(seg.payload().copy(), abs_seqno, header.fin);
 
-    if (_reassembler.empty()) {
-        return;
-    }
-
     // FIN_RECEV state
     if (!_fin_received && header.fin) {
         _fin_received = true;
@@ -49,7 +45,7 @@ optional<WrappingInt32> TCPReceiver::ackno() const {
     
     uint64_t _ackno = _reassembler.stream_out().bytes_written() + 1;
     
-    if (_fin_received) {
+    if (_fin_received && _reassembler.empty()) {
         _ackno += 1;
     }
 
