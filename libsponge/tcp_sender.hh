@@ -15,6 +15,41 @@
 //! segments, keeps track of which segments are still in-flight,
 //! maintains the Retransmission Timer, and retransmits in-flight
 //! segments if the retransmission timer expires.
+
+class Timer {
+  private:
+    size_t _timeout;
+    size_t _elapsed = 0; //! timer 시작 이후 경과 시간
+    bool _running = false; //! timer 동작 여부
+  
+  public:
+    Timer(const uint16_t timeout)
+      :_timeout(timeout) {}
+
+    //! 매 tick 마다 호출하여 경과 시간 업데이트
+    void tick() {
+      if (!_running)
+        return;
+
+      _elapsed += ~;
+    }
+
+    //! timer가 만료되었는지 판단
+    void is_expired() {
+      return _running && _elapsed >= _timeout;
+    }
+
+    //! start timer
+    void start() {
+
+    }
+
+    //! stop timer
+    void stop() {
+
+    }
+};
+
 class TCPSender {
   private:
     //! our initial sequence number, the number for our SYN.
@@ -31,6 +66,18 @@ class TCPSender {
 
     //! the (absolute) sequence number for the next byte to be sent
     uint64_t _next_seqno{0};
+
+    //! window size
+    uint16_t _window_size;
+
+    //! outstanding statements
+    struct OutstandingSegment {
+        uint64_t abs_seqno;  
+        TCPSegment segment;
+    };
+
+    //! timer
+    Timer _timer;
 
   public:
     //! Initialize a TCPSender
@@ -90,3 +137,5 @@ class TCPSender {
 };
 
 #endif  // SPONGE_LIBSPONGE_TCP_SENDER_HH
+
+
