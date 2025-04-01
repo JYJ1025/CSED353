@@ -8,6 +8,9 @@
 
 #include <functional>
 #include <queue>
+#include <optional>
+#include <random>
+#include <algorithm>
 
 //! \brief The "sender" part of a TCP implementation.
 
@@ -27,27 +30,33 @@ class Timer {
       :_timeout(timeout) {}
 
     //! 매 tick 마다 호출하여 경과 시간 업데이트
-    void tick() {
+    void tick(const size_t time_lapse) {
       if (!_running)
         return;
-
-      _elapsed += ~;
+      _elapsed += time_lapse;
     }
 
     //! timer가 만료되었는지 판단
-    void is_expired() {
+    bool is_expired() const {
       return _running && _elapsed >= _timeout;
     }
 
+
     //! start timer
     void start() {
-
+      _running = true;
+      _elapsed = 0;
     }
 
     //! stop timer
     void stop() {
-
+      _elapsed = 0;
+      _running = false;
     }
+
+    size_t current_timeout() const { return _timeout; }
+    bool is_running() const { return _running; }
+    void set_timeout(const size_t t) { _timeout = t; }
 };
 
 class TCPSender {
@@ -75,9 +84,13 @@ class TCPSender {
         uint64_t abs_seqno;  
         TCPSegment segment;
     };
+    std::deque<OutstandingSegment> _outstanding_segments;
 
     //! timer
     Timer _timer;
+
+    //! 연속 재전송 횟수
+    unsigned int _consecutive_retransmissions{0};
 
   public:
     //! Initialize a TCPSender
