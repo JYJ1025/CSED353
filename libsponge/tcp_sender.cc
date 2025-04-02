@@ -158,7 +158,19 @@ unsigned int TCPSender::consecutive_retransmissions() const {
 }
 
 void TCPSender::send_empty_segment() {
-     TCPSegment seg;
-     seg.header().seqno = _isn + _next_seqno;
-     _segments_out.push(seg);
+    TCPSegment seg;
+    seg.header().seqno = wrap(_next_seqno, _isn);
+
+    _segments_out.push(seg);
+
+    //! SYN/FIN이 아니면 _outstanding_segments에 추가 X
+    if (seg.length_in_sequence_space() > 0) {
+        _outstanding_segments.push_back({ _next_seqno, seg });
+        _next_seqno += seg.length_in_sequence_space();
+
+        //! start timer
+        if (!_timer.is_running()) {
+            _timer.start();
+        }
+    }
 }
