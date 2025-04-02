@@ -22,8 +22,8 @@
 class Timer {
   private:
     size_t _timeout;
-    size_t _elapsed = 0; //! timer 시작 이후 경과 시간
-    bool _running = false; //! timer 동작 여부
+    size_t _elapsed = 0;
+    bool _running = false;
   
   public:
     Timer(const uint16_t timeout)
@@ -76,8 +76,9 @@ class TCPSender {
     //! the (absolute) sequence number for the next byte to be sent
     uint64_t _next_seqno{0};
 
+    //! added
     //! window size
-    uint16_t _window_size;
+    uint16_t _window_size{1};
 
     //! outstanding statements
     struct OutstandingSegment {
@@ -91,6 +92,9 @@ class TCPSender {
 
     //! 연속 재전송 횟수
     unsigned int _consecutive_retransmissions{0};
+
+    bool _after_fin{false};
+    uint64_t _last_ack{0};
 
   public:
     //! Initialize a TCPSender
