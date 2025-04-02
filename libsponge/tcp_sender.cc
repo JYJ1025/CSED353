@@ -46,7 +46,7 @@ uint64_t TCPSender::bytes_in_flight() const {
 void TCPSender::fill_window() {
     while (true) {
         //! 1. eof or already fin sent
-        if (_stream.eof())
+        if (_stream.eof() && _after_fin)
             break;
 
         size_t effective_window = std::max(_window_size, uint16_t{1});
@@ -71,6 +71,7 @@ void TCPSender::fill_window() {
         //! 2-3. Fin flag (eof or enough space)
         if (_stream.eof() && available > segment.length_in_sequence_space()) {
             segment.header().fin = true;
+            _after_fin = true;
         }
 
         if (segment.length_in_sequence_space() == 0)
@@ -116,9 +117,9 @@ void TCPSender::ack_received(const WrappingInt32 ackno, const uint16_t window_si
         }
     }
 
-    //! 3. stop timer if all _outstanding_segments acked
-    if (_outstanding_segments.empty())
-        _timer.stop();
+    // //! 3. stop timer if all _outstanding_segments acked -> tick()에서 처리
+    // if (_outstanding_segments.empty())
+    //     _timer.stop();
     
     //! 4. update _window_size
     _window_size = window_size;
