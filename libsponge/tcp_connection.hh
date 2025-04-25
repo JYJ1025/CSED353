@@ -58,7 +58,7 @@ class TCPConnection {
     void set_ack(TCPSegment &seg);
     void send_segment();
     void send_rst();
-
+    void handle_rst();
     ////////////////////////////////////////////////////////
     //! Construct a new connection from a configuration
     explicit TCPConnection(const TCPConfig &cfg) : _cfg{cfg} {}

@@ -59,25 +59,27 @@ void TCPConnection::send_rst() {
     send_segment();
 }
 
+void TCPConnection::handle_rst() {
+    send_rst();
+    _is_reset = true;
+    _sender.stream_in().set_error();
+    _receiver.stream_out().set_error();
+    return;
+}
+
 void TCPConnection::segment_received(const TCPSegment &seg) {
     // 1) 연결 시작 전, SYN 없는 첫 패킷은 무시
     if (!_receiver.ackno().has_value() && _sender.next_seqno_absolute()==0 && !seg.header().syn)
         return;
-
     // 2) RST 수신 시 연결 강제 종료
     if (seg.header().rst) {
-        _is_reset = true;
-        _sender.stream_in().set_error();
-        _receiver.stream_out().set_error();
-        return;
+        handle_rst()
     }
-
     // 3) TCPReceiver로 전달
     _receiver.segment_received(seg);
-
     // 4) update _last_segment_received
     _last_segment_received = _connection_age;
-
+    
     // 5) receiver stream은 처리 완료, sender stream은 처리 완료 X인 경우, linger 중지
     if (_receiver.stream_out().input_ended() && !_sender.stream_in().eof())
         _linger_after_streams_finish = false;
@@ -105,8 +107,11 @@ bool TCPConnection::active() const {
     bool streams_alive = !(_receiver.stream_out().eof()
                           && _sender.stream_in().eof()
                           && _sender.bytes_in_flight() == 0);
-    if (_is_reset || streams_alive) {
+    if (_is_reset) {
         return false;
+    }
+    if (streams_alive) {
+        return true;
     }
     // linger 남아 있으면 아직 active
     if (!_linger_after_streams_finish) {
@@ -133,11 +138,7 @@ void TCPConnection::tick(const size_t ms_since_last_tick) {
     _sender.tick(ms_since_last_tick); // update retransmission timer
 
     if (_sender.consecutive_retransmissions() > TCPConfig::MAX_RETX_ATTEMPTS) {
-        send_rst();
-        _is_reset = true;
-        _sender.stream_in().set_error();
-        _receiver.stream_out().set_error();
-        return;
+        handle_rst();
     }
 
     while (!_sender.segments_out().empty())
@@ -150,7 +151,6 @@ void TCPConnection::end_input_stream() {
     while (!_sender.segments_out().empty())
         send_segment();
 }
-
 
 void TCPConnection::connect() {
     _sender.fill_window();
