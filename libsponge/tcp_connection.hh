@@ -57,7 +57,6 @@ class TCPConnection {
     void set_window(TCPSegment &seg);
     void set_ack(TCPSegment &seg);
     void send_segment();
-    void send_rst();
     void handle_rst();
     ////////////////////////////////////////////////////////
     //! Construct a new connection from a configuration

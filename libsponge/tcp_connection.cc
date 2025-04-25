@@ -51,16 +51,12 @@ void TCPConnection::send_segment() {
     _segments_out.push(seg);
 }
 
-// 완전 비우고, 빈 세그먼트 만들고, RST 플래그 켜고, 보내기
-void TCPConnection::send_rst() {
+void TCPConnection::handle_rst() {
     _sender.segments_out() = {};
     _sender.send_empty_segment();
     _sender.segments_out().front().header().rst = true;
-    send_segment();
-}
 
-void TCPConnection::handle_rst() {
-    send_rst();
+    send_segment();
     _is_reset = true;
     _sender.stream_in().set_error();
     _receiver.stream_out().set_error();
