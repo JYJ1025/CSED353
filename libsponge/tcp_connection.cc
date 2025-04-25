@@ -68,35 +68,42 @@ void TCPConnection::handle_rst() {
 }
 
 void TCPConnection::segment_received(const TCPSegment &seg) {
-    // 1) 연결 시작 전, SYN 없는 첫 패킷은 무시
+    // 연결 시작 전, SYN 없는 첫 패킷은 무시
     if (!_receiver.ackno().has_value() && _sender.next_seqno_absolute()==0 && !seg.header().syn)
         return;
-    // 2) RST 수신 시 연결 강제 종료
+    // RST 수신 시 연결 강제 종료
     if (seg.header().rst) {
-        handle_rst()
+        handle_rst();
     }
-    // 3) TCPReceiver로 전달
+    // TCPReceiver로 전달
     _receiver.segment_received(seg);
-    // 4) update _last_segment_received
+
+    // update _last_segment_received
     _last_segment_received = _connection_age;
-    
-    // 5) receiver stream은 처리 완료, sender stream은 처리 완료 X인 경우, linger 중지
+
+    // receiver stream은 처리 완료, sender stream은 처리 완료 X인 경우, linger 중지
     if (_receiver.stream_out().input_ended() && !_sender.stream_in().eof())
         _linger_after_streams_finish = false;
 
-    // 6) ACK field가 있으면 sender에게 전달
+    // ACK field가 있으면 sender에게 전달
     if (seg.header().ack) {
         _sender.ack_received(seg.header().ackno, seg.header().win);
     }
+    
+    // Keep-alive segment
+    bool keep_alive = _receiver.ackno().has_value() && (seg.length_in_sequence_space() == 0);
+    if (keep_alive) {
+        _sender.send_empty_segment();
+    }
 
-    // 7) 아직 연결 개시 전 (SYN만 보낸 상태) 처리: 윈도우 채우고 1세그 보냄
+    // 아직 연결 개시 전 (SYN만 보낸 상태) 처리: 윈도우 채우고 1세그 보냄
     if (_sender.next_seqno_absolute() == 0) {
         _sender.fill_window();  
         send_segment();
         return;
     }
 
-    // 8) window size에 여유가 생겼을 수 있으므로, 재전송/새 데이터 채움
+    // window size에 여유가 생겼을 수 있으므로, 재전송/새 데이터 채움
     _sender.fill_window();
     while (!_sender.segments_out().empty())
         send_segment();
@@ -163,7 +170,7 @@ TCPConnection::~TCPConnection() {
         if (active()) {
             cerr << "Warning: Unclean shutdown of TCPConnection\n";
             // Your code here: need to send a RST segment to the peer
-            send_rst();
+            handle_rst();
         }
     } catch (const exception &e) {
         std::cerr << "Exception destructing TCP FSM: " << e.what() << std::endl;
