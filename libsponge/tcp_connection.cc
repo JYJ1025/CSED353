@@ -112,7 +112,7 @@ bool TCPConnection::active() const {
     if (!_linger_after_streams_finish) {
         return false;
     }
-    
+
     return _connection_age - _last_segment_received < 10 * _cfg.rt_timeout;
 }
 
@@ -150,6 +150,7 @@ void TCPConnection::end_input_stream() {
     while (!_sender.segments_out().empty())
         send_segment();
 }
+
 
 void TCPConnection::connect() {
     _sender.fill_window();
