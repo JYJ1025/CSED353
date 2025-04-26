@@ -74,6 +74,11 @@ void TCPConnection::segment_received(const TCPSegment &seg) {
         }
     }
 
+    if (seg.header().rst) {
+        handle_rst();
+        return;
+    }
+    
     // TCPReceiver로 전달
     _receiver.segment_received(seg);
 
