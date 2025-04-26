@@ -1,13 +1,13 @@
 Assignment 4 Writeup
 =============
 
-My name: [your name here]
+My name: Yoonjae Jung
 
-My POVIS ID: [your povis id here]
+My POVIS ID: jyjllll1025
 
-My student ID (numeric): [your student id here]
+My student ID (numeric): 20210509
 
-This assignment took me about [n] hours to do (including the time on studying, designing, and writing the code).
+This assignment took me about 25 hours to do (including the time on studying, designing, and writing the code).
 
 If you used any part of best-submission codes, specify all the best-submission numbers that you used (e.g., 1, 2): []
 
@@ -22,7 +22,7 @@ Implementation Challenges:
 []
 
 Remaining Bugs:
-[]
+- Having passed all the tests, there are no bugs I think. 
 
 - Optional: I had unexpected difficulty with: [describe]
 
