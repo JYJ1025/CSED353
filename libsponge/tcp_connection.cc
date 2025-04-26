@@ -66,17 +66,14 @@ void TCPConnection::handle_rst() {
 void TCPConnection::segment_received(const TCPSegment &seg) {
     if (!_receiver.ackno().has_value() && _sender.next_seqno_absolute() == 0) {
         if (seg.header().rst) {
-            handle_rst();
+            _is_reset = true;
+            _sender.stream_in().set_error();
+            _receiver.stream_out().set_error();
             return;
         }
         if (!seg.header().syn) {
             return;
         }
-    }
-
-    if (seg.header().rst) {
-        handle_rst();
-        return;
     }
     
     // TCPReceiver로 전달
