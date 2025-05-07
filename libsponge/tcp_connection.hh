@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // #ifndef SPONGE_LIBSPONGE_TCP_FACTORED_HH
 // #define SPONGE_LIBSPONGE_TCP_FACTORED_HH
 
@@ -75,6 +76,8 @@
 
 // #endif  // SPONGE_LIBSPONGE_TCP_FACTORED_HH
 
+=======
+>>>>>>> upstream/lab5-startercode
 #ifndef SPONGE_LIBSPONGE_TCP_FACTORED_HH
 #define SPONGE_LIBSPONGE_TCP_FACTORED_HH
 
@@ -98,12 +101,15 @@ class TCPConnection {
     //! in case the remote TCPConnection doesn't know we've received its whole stream?
     bool _linger_after_streams_finish{true};
 
+<<<<<<< HEAD
     //! Elapsed time since last segment received, used for timeout logic
     size_t _time_since_last_segment_received{0};
 
     //! Helper to annotate and enqueue outgoing segments
     void _send_segments();
 
+=======
+>>>>>>> upstream/lab5-startercode
   public:
     //! \name "Input" interface for the writer
     //!@{

@@ -1,6 +1,7 @@
 Assignment 1 Writeup
 =============
 
+<<<<<<< HEAD
 My name: Yoonjae Jung
 
 My POVIS ID: jyjllll1025
@@ -26,6 +27,24 @@ Implementation Challenges:
 
 Remaining Bugs:
 - Having passed all the tests, there are no bugs I think. 
+=======
+My name: [your name here]
+
+My POVIS ID: [your povis id here]
+
+My student ID (numeric): [your student id here]
+
+This assignment took me about [n] hours to do (including the time on studying, designing, and writing the code).
+
+Program Structure and Design of the StreamReassembler:
+[]
+
+Implementation Challenges:
+[]
+
+Remaining Bugs:
+[]
+>>>>>>> upstream/lab5-startercode
 
 - Optional: I had unexpected difficulty with: [describe]
 

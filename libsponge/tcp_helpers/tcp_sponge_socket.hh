@@ -5,9 +5,15 @@
 #include "eventloop.hh"
 #include "fd_adapter.hh"
 #include "file_descriptor.hh"
+<<<<<<< HEAD
 #include "tcp_config.hh"
 #include "tcp_connection.hh"
 #include "tcp_over_ip.hh"
+=======
+#include "network_interface.hh"
+#include "tcp_config.hh"
+#include "tcp_connection.hh"
+>>>>>>> upstream/lab5-startercode
 #include "tuntap_adapter.hh"
 
 #include <atomic>
@@ -23,9 +29,17 @@ class TCPSpongeSocket : public LocalStreamSocket {
     //! Stream socket for reads and writes between owner and TCP thread
     LocalStreamSocket _thread_data;
 
+<<<<<<< HEAD
     //! Adapter to underlying datagram socket (e.g., UDP or IP)
     AdaptT _datagram_adapter;
 
+=======
+  protected:
+    //! Adapter to underlying datagram socket (e.g., UDP or IP)
+    AdaptT _datagram_adapter;
+
+  private:
+>>>>>>> upstream/lab5-startercode
     //! Set up the TCPConnection and the event loop
     void _initialize_TCP(const TCPConfig &config);
 
@@ -96,6 +110,11 @@ class TCPSpongeSocket : public LocalStreamSocket {
 
 using TCPOverUDPSpongeSocket = TCPSpongeSocket<TCPOverUDPSocketAdapter>;
 using TCPOverIPv4SpongeSocket = TCPSpongeSocket<TCPOverIPv4OverTunFdAdapter>;
+<<<<<<< HEAD
+=======
+using TCPOverIPv4OverEthernetSpongeSocket = TCPSpongeSocket<TCPOverIPv4OverEthernetAdapter>;
+
+>>>>>>> upstream/lab5-startercode
 using LossyTCPOverUDPSpongeSocket = TCPSpongeSocket<LossyTCPOverUDPSocketAdapter>;
 using LossyTCPOverIPv4SpongeSocket = TCPSpongeSocket<LossyTCPOverIPv4OverTunFdAdapter>;
 
@@ -126,4 +145,17 @@ class CS144TCPSocket : public TCPOverIPv4SpongeSocket {
     void connect(const Address &address);
 };
 
+<<<<<<< HEAD
+=======
+//! Helper class that makes a TCPOverIPv4overEthernetSpongeSocket behave more like a (kernel) TCPSocket
+class FullStackSocket : public TCPOverIPv4OverEthernetSpongeSocket {
+  public:
+    //! Construct a TCP (stream) socket, using the CS144 TCPConnection object,
+    //! that encapsulates TCP segments in IP datagrams, then encapsulates
+    //! those IP datagrams in Ethernet frames sent to the Ethernet address of the next hop.
+    FullStackSocket();
+    void connect(const Address &address);
+};
+
+>>>>>>> upstream/lab5-startercode
 #endif  // SPONGE_LIBSPONGE_TCP_SPONGE_SOCKET_HH
