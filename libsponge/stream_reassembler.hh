@@ -5,16 +5,12 @@
 
 #include <cstdint>
 #include <string>
-<<<<<<< HEAD
 #include <vector>
-=======
->>>>>>> upstream/lab5-startercode
 
 //! \brief A class that assembles a series of excerpts from a byte stream (possibly out of order,
 //! possibly overlapping) into an in-order byte stream.
 class StreamReassembler {
   private:
-<<<<<<< HEAD
     ByteStream _output;  //!< The reassembled in-order byte stream
     size_t _capacity;    //!< The maximum number of bytes
 
@@ -27,12 +23,6 @@ class StreamReassembler {
 
     bool _eof = false;  //! EOF flag
     size_t _eof_index = 0;
-=======
-    // Your code here -- add private members as necessary.
-
-    ByteStream _output;  //!< The reassembled in-order byte stream
-    size_t _capacity;    //!< The maximum number of bytes
->>>>>>> upstream/lab5-startercode
 
   public:
     //! \brief Construct a `StreamReassembler` that will store up to `capacity` bytes.
@@ -67,8 +57,4 @@ class StreamReassembler {
     bool empty() const;
 };
 
-<<<<<<< HEAD
 #endif  // SPONGE_LIBSPONGE_STREAM_REASSEMBLER_HH
-=======
-#endif  // SPONGE_LIBSPONGE_STREAM_REASSEMBLER_HH
->>>>>>> upstream/lab5-startercode

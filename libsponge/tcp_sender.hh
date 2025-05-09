@@ -8,12 +8,9 @@
 
 #include <functional>
 #include <queue>
-<<<<<<< HEAD
 #include <optional>
 #include <random>
 #include <algorithm>
-=======
->>>>>>> upstream/lab5-startercode
 
 //! \brief The "sender" part of a TCP implementation.
 
@@ -21,7 +18,6 @@
 //! segments, keeps track of which segments are still in-flight,
 //! maintains the Retransmission Timer, and retransmits in-flight
 //! segments if the retransmission timer expires.
-<<<<<<< HEAD
 
 class Timer {
   private:
@@ -63,8 +59,7 @@ class Timer {
     void set_timeout(const size_t t) { _timeout = t; }
 };
 
-=======
->>>>>>> upstream/lab5-startercode
+
 class TCPSender {
   private:
     //! our initial sequence number, the number for our SYN.
@@ -82,7 +77,6 @@ class TCPSender {
     //! the (absolute) sequence number for the next byte to be sent
     uint64_t _next_seqno{0};
 
-<<<<<<< HEAD
     //! added
     //! window size
     uint16_t _window_size{1};
@@ -103,8 +97,6 @@ class TCPSender {
     bool _after_fin{false};
     uint64_t _last_ack{0};
 
-=======
->>>>>>> upstream/lab5-startercode
   public:
     //! Initialize a TCPSender
     TCPSender(const size_t capacity = TCPConfig::DEFAULT_CAPACITY,
@@ -163,8 +155,3 @@ class TCPSender {
 };
 
 #endif  // SPONGE_LIBSPONGE_TCP_SENDER_HH
-<<<<<<< HEAD
-
-
-=======
->>>>>>> upstream/lab5-startercode

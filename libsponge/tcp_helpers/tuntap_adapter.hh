@@ -1,12 +1,8 @@
 #ifndef SPONGE_LIBSPONGE_TUNFD_ADAPTER_HH
 #define SPONGE_LIBSPONGE_TUNFD_ADAPTER_HH
 
-<<<<<<< HEAD
-#include "tcp_over_ip.hh"
-=======
 #include "ethernet_header.hh"
 #include "network_interface.hh"
->>>>>>> upstream/lab5-startercode
 #include "tun.hh"
 
 #include <optional>
@@ -44,8 +40,6 @@ class TCPOverIPv4OverTunFdAdapter : public TCPOverIPv4Adapter {
 //! Typedef for TCPOverIPv4OverTunFdAdapter
 using LossyTCPOverIPv4OverTunFdAdapter = LossyFdAdapter<TCPOverIPv4OverTunFdAdapter>;
 
-<<<<<<< HEAD
-=======
 //! \brief A FD adapter for IPv4 datagrams read from and written to a TAP device
 class TCPOverIPv4OverEthernetAdapter : public TCPOverIPv4Adapter {
   private:
@@ -79,5 +73,4 @@ class TCPOverIPv4OverEthernetAdapter : public TCPOverIPv4Adapter {
     operator const TapFD &() const { return _tap; }
 };
 
->>>>>>> upstream/lab5-startercode
 #endif  // SPONGE_LIBSPONGE_TUNFD_ADAPTER_HH

@@ -1,9 +1,6 @@
 #include "tcp_sponge_socket.hh"
 
-<<<<<<< HEAD
-=======
 #include "network_interface.hh"
->>>>>>> upstream/lab5-startercode
 #include "parser.hh"
 #include "tun.hh"
 #include "util.hh"
@@ -215,11 +212,7 @@ void TCPSpongeSocket<AdaptT>::connect(const TCPConfig &c_tcp, const FdAdapterCon
 
     _datagram_adapter.config_mut() = c_ad;
 
-<<<<<<< HEAD
-    cerr << "DEBUG: Connecting to " << c_ad.destination.to_string() << "... ";
-=======
     cerr << "DEBUG: Connecting to " << c_ad.destination.to_string() << "...\n";
->>>>>>> upstream/lab5-startercode
     _tcp->connect();
 
     const TCPState expected_state = TCPState::State::SYN_SENT;
@@ -230,11 +223,7 @@ void TCPSpongeSocket<AdaptT>::connect(const TCPConfig &c_tcp, const FdAdapterCon
     }
 
     _tcp_loop([&] { return _tcp->state() == TCPState::State::SYN_SENT; });
-<<<<<<< HEAD
-    cerr << "done.\n";
-=======
     cerr << "Successfully connected to " << c_ad.destination.to_string() << ".\n";
->>>>>>> upstream/lab5-startercode
 
     _tcp_thread = thread(&TCPSpongeSocket::_tcp_main, this);
 }
@@ -252,20 +241,12 @@ void TCPSpongeSocket<AdaptT>::listen_and_accept(const TCPConfig &c_tcp, const Fd
     _datagram_adapter.config_mut() = c_ad;
     _datagram_adapter.set_listening(true);
 
-<<<<<<< HEAD
-    cerr << "DEBUG: Listening for incoming connection... ";
-=======
     cerr << "DEBUG: Listening for incoming connection...\n";
->>>>>>> upstream/lab5-startercode
     _tcp_loop([&] {
         const auto s = _tcp->state();
         return (s == TCPState::State::LISTEN or s == TCPState::State::SYN_RCVD or s == TCPState::State::SYN_SENT);
     });
-<<<<<<< HEAD
-    cerr << "new connection from " << _datagram_adapter.config().destination.to_string() << ".\n";
-=======
     cerr << "New connection from " << _datagram_adapter.config().destination.to_string() << ".\n";
->>>>>>> upstream/lab5-startercode
 
     _tcp_thread = thread(&TCPSpongeSocket::_tcp_main, this);
 }
@@ -295,12 +276,9 @@ template class TCPSpongeSocket<TCPOverUDPSocketAdapter>;
 //! Specialization of TCPSpongeSocket for TCPOverIPv4OverTunFdAdapter
 template class TCPSpongeSocket<TCPOverIPv4OverTunFdAdapter>;
 
-<<<<<<< HEAD
-=======
 //! Specialization of TCPSpongeSocket for TCPOverIPv4OverEthernetAdapter
 template class TCPSpongeSocket<TCPOverIPv4OverEthernetAdapter>;
 
->>>>>>> upstream/lab5-startercode
 //! Specialization of TCPSpongeSocket for LossyTCPOverUDPSocketAdapter
 template class TCPSpongeSocket<LossyTCPOverUDPSocketAdapter>;
 
@@ -319,8 +297,6 @@ void CS144TCPSocket::connect(const Address &address) {
 
     TCPOverIPv4SpongeSocket::connect(tcp_config, multiplexer_config);
 }
-<<<<<<< HEAD
-=======
 
 static const string LOCAL_TAP_IP_ADDRESS = "169.254.10.9";
 static const string LOCAL_TAP_NEXT_HOP_ADDRESS = "169.254.10.1";
@@ -352,4 +328,3 @@ void FullStackSocket::connect(const Address &address) {
 
     TCPOverIPv4OverEthernetSpongeSocket::connect(tcp_config, multiplexer_config);
 }
->>>>>>> upstream/lab5-startercode

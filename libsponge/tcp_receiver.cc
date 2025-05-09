@@ -11,7 +11,6 @@ void DUMMY_CODE(Targs &&... /* unused */) {}
 using namespace std;
 
 void TCPReceiver::segment_received(const TCPSegment &seg) {
-<<<<<<< HEAD
     const TCPHeader &header = seg.header();
 
     // LISTEN state
@@ -54,11 +53,3 @@ optional<WrappingInt32> TCPReceiver::ackno() const {
 }
 
 size_t TCPReceiver::window_size() const { return _reassembler.stream_out().remaining_capacity(); }
-=======
-    DUMMY_CODE(seg);
-}
-
-optional<WrappingInt32> TCPReceiver::ackno() const { return {}; }
-
-size_t TCPReceiver::window_size() const { return {}; }
->>>>>>> upstream/lab5-startercode

@@ -32,16 +32,35 @@
 class NetworkInterface {
   private:
     //! Ethernet (known as hardware, network-access-layer, or link-layer) address of the interface
-    EthernetAddress _ethernet_address;
-
+    EthernetAddress _ethernet_address; 
     //! IP (known as internet-layer or network-layer) address of the interface
     Address _ip_address;
-
     //! outbound queue of Ethernet frames that the NetworkInterface wants sent
-    std::queue<EthernetFrame> _frames_out{};
+    std::queue<EthernetFrame> _frames_out{}; // // 전송 대기 프레임 큐
+
+    // My code
+    //! time passed after interface creation, measured in miliseconds
+    std::size_t _age{0};
+
+    // IP - MAC mapping
+    struct ARPcache {
+      std::uint32_t ip;
+      EthernetAddress mac;
+      std::size_t timestamp;
+    };
+    std::vector<ARPcache> _arp_cache;
+    
+    // arp pending IP frame
+    struct PendingFrames {
+      std::uint32_t ip{0};
+      std::queue<EthernetFrame> frames{};
+      std::size_t next_request_deadline{0}; // ms 단위
+    };
+    std::vector<PendingFrames> _pending_frames;
 
   public:
     //! \brief Construct a network interface with given Ethernet (network-access-layer) and IP (internet-layer) addresses
+    // 생성자: MAC/IP 주소 설정, 자기 자신 매핑을 만료 시각 무제한으로 등록
     NetworkInterface(const EthernetAddress &ethernet_address, const Address &ip_address);
 
     //! \brief Access queue of Ethernet frames awaiting transmission
