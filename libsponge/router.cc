@@ -33,15 +33,58 @@ void Router::add_route(const uint32_t route_prefix,
     _routing_table.push_back({route_prefix, prefix_length, next_hop, interface_num});
 }
 
+static uint32_t make_mask(uint8_t prefix_length) {
+    if (prefix_length == 0) {
+        return 0x00000000u;
+    } else if (prefix_length == 32) {
+        return 0xFFFFFFFFu;
+    } else {
+        return ~((1u << (32 - prefix_length)) - 1);
+    }
+}
+
 //! \param[in] dgram The datagram to be routed
 void Router::route_one_datagram(InternetDatagram &dgram) {
-    DUMMY_CODE(dgram);
-    // Your code here.
-    // extract dest. IP from dgram.header()
-    // iterate routing table
-    // drop or TTL check
-    // define next_hop
-    // call _interfaces[interface_num].send_datagram(dgram);
+    // check TTL 
+    if (dgram.header().ttl <= 1) {
+        return;
+    }
+    dgram.header().ttl--;
+
+    // find dest. IP
+    const uint32_t dst_ip = dgram.header().dst;
+
+    // longest-prefix-match
+    int best_len = -1;
+    std::tuple<uint32_t, uint8_t, std::optional<Address>, size_t> best_entry;
+
+    for (size_t i = 0; i < _routing_table.size(); i++) {
+        uint32_t prefix = std::get<0>(_routing_table[i]);
+        uint8_t  plen   = std::get<1>(_routing_table[i]);
+
+        uint32_t mask = make_mask(plen);
+
+        // compare (dst_ip & mask) & prefix
+        if ((dst_ip & mask) == prefix) {
+            if (static_cast<int>(plen) > best_len) {
+                best_len   = plen;
+                best_entry = _routing_table[i];
+            }
+        }
+    }
+
+    // drop if there is no matching
+    if (best_len < 0) {
+        return;
+    }
+
+    // bring next hop & interface num
+    std::optional<Address> hop_opt = std::get<2>(best_entry);
+    size_t if_num = std::get<3>(best_entry);
+    Address next_hop = hop_opt.value_or(Address::from_ipv4_numeric(dst_ip));
+
+    // sending
+    interface(if_num).send_datagram(dgram, next_hop);
 }
 
 void Router::route() {

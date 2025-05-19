@@ -5,12 +5,8 @@
 
 #include <optional>
 #include <queue>
-#include <cstddef>    
-#include <cstdint>    
-#include <vector>     
-#include <tuple>      
-#include <optional>   
-#include <queue>     
+#include <tuple>
+  
 
 //! \brief A wrapper for NetworkInterface that makes the host-side
 //! interface asynchronous: instead of returning received datagrams
@@ -42,9 +38,6 @@ class AsyncNetworkInterface : public NetworkInterface {
 
     //! Access queue of Internet datagrams that have been received
     std::queue<InternetDatagram> &datagrams_out() { return _datagrams_out; }
-
-    //! Routing table (collection of routing information that from add_route)
-    std::vector<std::tuple<uint32_t, uint8_t, std::optional<Address>, size_t>> _routing_table{};
 };
 
 //! \brief A router that has multiple network interfaces and
@@ -58,6 +51,9 @@ class Router {
     //! datagram's destination address.
     void route_one_datagram(InternetDatagram &dgram);
 
+    //! Routing table (collection of routing information that from add_route)
+    std::vector<std::tuple<uint32_t, uint8_t, std::optional<Address>, size_t>> _routing_table{};
+    
   public:
     //! Add an interface to the router
     //! \param[in] interface an already-constructed network interface
